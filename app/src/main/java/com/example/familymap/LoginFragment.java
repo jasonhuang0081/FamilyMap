@@ -22,6 +22,7 @@ import results.LoginResult;
 import results.RegisterResult;
 
 public class LoginFragment extends Fragment {
+    private String personID;
     private EditText serverHost;
     private EditText serverPort;
     private EditText userName;
@@ -241,6 +242,7 @@ public class LoginFragment extends Fragment {
                     if (synchRes.equals("Updated Succeed!"))
                     {
                         output = firstNameString + " " + lastNameString;
+                        personID = result.getPersonID();
                         // after logging in here
 
                     }
@@ -265,6 +267,7 @@ public class LoginFragment extends Fragment {
             Toast.makeText(getActivity(), output, Toast.LENGTH_SHORT).show();
             if (output.equals(firstNameString + " " + lastNameString))
             {
+                Data.getInstance().processData(personID);
                 MainActivity activity = (MainActivity) getActivity();
                 activity.SetMap();
             }
