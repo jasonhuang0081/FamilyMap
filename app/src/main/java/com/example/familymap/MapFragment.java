@@ -1,5 +1,6 @@
 package com.example.familymap;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -30,10 +31,12 @@ import model.Person;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback  {
     private GoogleMap map;
+    private Event currentEvent = null;
     private TextView nameDisplay;
     private TextView eventDisplay;
     private TextView yearDisplay;
     private ImageView image;
+    private View clickView;
     private int colorFactor = 1;
 
     @Override
@@ -47,7 +50,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         eventDisplay = view.findViewById(R.id.eventNCity);
         yearDisplay = view.findViewById(R.id.eventCountryNtime);
         image = view.findViewById(R.id.image);
-
+        clickView = view.findViewById(R.id.clickView);
+        clickView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /// check if currentEvent is null, then enter person activity
+                if (currentEvent != null)
+                {
+                    String personID = currentEvent.getPersonID();
+                    Data.getInstance().setCurrentPerson(Data.getInstance().getPersonByID(personID));
+                    Intent intent = new Intent(getActivity(), PersonActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
         return view;
     }
@@ -64,21 +80,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Event event = (Event) marker.getTag();
+                currentEvent = (Event) marker.getTag();
                 List<Person> personList = Data.getInstance().getPersonList();
                 String name = "";
                 String gender = "m";
                 for (Person each: personList)
                 {
-                    if (each.getPersonID().equals(event.getPersonID()))
+                    if (each.getPersonID().equals(currentEvent.getPersonID()))
                     {
                         name = each.getFirstName() + " " + each.getLastName();
                         gender = each.getGender();
                         break;
                     }
                 }
-                String eventDes = event.getEventType() + ": " + event.getCity();
-                String eventYear = event.getCountry() + " (" + Integer.toString(event.getYear()) + ")";
+                String eventDes = currentEvent.getEventType() + ": " + currentEvent.getCity();
+                String eventYear = currentEvent.getCountry() + " (" + Integer.toString(currentEvent.getYear()) + ")";
 
                 if (gender.equals("m"))
                 {
@@ -100,7 +116,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         });
     }
 
-
+    private void addSpouseLine()
+    {
+//        Polyline line = map.addPolyline(new PolylineOptions()
+//                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
+//                .width(5)
+//                .color(Color.RED));
+    }
     private void addMarker()
     {
         int numEvent = Data.getInstance().getShownEvent().size();
@@ -132,7 +154,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
             {
                 int newColor = getNewColor();
                 hue = (float) newColor;
-                Data.getInstance().getMarkerColor().put(eventType,(Integer)newColor);
+                Data.getInstance().getMarkerColor().put(eventType, newColor);
             }
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(new LatLng(lat, lon))

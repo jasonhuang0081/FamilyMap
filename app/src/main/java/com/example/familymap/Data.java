@@ -1,7 +1,6 @@
 package com.example.familymap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +12,17 @@ import model.Person;
 
 public class Data {
     private static Data single_instance;
+    private Person currentPerson;
+    private Event currentEvent;
     private List<Person> personList = new ArrayList<>();
     private List<Event>  eventList = new ArrayList<>();
     private List<Event> shownEvent = new ArrayList<>();
     private Map<String, Integer> markerColor = new TreeMap<>();
     private Map<String, Boolean> eventFilter = new TreeMap<>();
-    private Map<String,String> eventToGender = new TreeMap<>();
-    private Map<String, Set<Person>> parentsTree = new TreeMap<>();
+    private Map<String,String> eventIDToGender = new TreeMap<>();
+    private Map<String, String> eventIDToBelongerID = new TreeMap<>();
+    private Map<String, Set<Person>> personIDtoParents = new TreeMap<>();
+    private Map<String, Person> parentIDtoChildren = new TreeMap<>();
     private List<Event> motherSideEvent = new ArrayList<>();
     private List<Event> fatherSideEvent = new ArrayList<>();
     private boolean ismaleEvent = true;
@@ -37,6 +40,49 @@ public class Data {
         }
         return single_instance;
     }
+
+    public List<Event> getPersonalEvents(String personID)
+    {
+        List<Event> personalEvents = new ArrayList<>();
+        for (Event each: eventList)
+        {
+            if (each.getPersonID().equals(personID))
+            {
+                personalEvents.add(each);
+            }
+        }
+        return personalEvents;
+    }
+    public List<Person> getImmediateFaimly(String personID)
+    {
+        List<Person> family = new ArrayList<>();
+        for (Map.Entry<String, Set<Person>> entry : personIDtoParents.entrySet())
+        {
+            if (entry.getKey().equals(personID))
+            {
+                for(Person parent: entry.getValue())
+                {
+                    family.add(parent);
+                }
+                break;
+            }
+        }
+        for (Map.Entry<String, Person> entry : parentIDtoChildren.entrySet())
+        {
+            if (entry.getKey().equals(personID))
+            {
+                family.add(entry.getValue());
+                break;
+            }
+        }
+        Person person = getPersonByID(personID);
+        if (person.getSpouse() != null)
+        {
+            family.add(person);
+        }
+        return family;
+    }
+
 
     private void filter()
     {
@@ -56,7 +102,7 @@ public class Data {
         {
             for(Event each: tempList1)
             {
-                if (eventToGender.get(each.getEventID()).equals("m"))
+                if (eventIDToGender.get(each.getEventID()).equals("m"))
                 {
                     tempList2.add(each);
                 }
@@ -66,7 +112,7 @@ public class Data {
         {
             for(Event each: tempList1)
             {
-                if (eventToGender.get(each.getEventID()).equals("f"))
+                if (eventIDToGender.get(each.getEventID()).equals("f"))
                 {
                     tempList2.add(each);
                 }
@@ -89,7 +135,9 @@ public class Data {
                 if (eachEvent.getPersonID().equals(eachPerson.getPersonID()))
                 {
                     String gender = eachPerson.getGender().toLowerCase();
-                    eventToGender.put(eachEvent.getEventID(),gender);
+                    eventIDToGender.put(eachEvent.getEventID(),gender);
+                    String name = eachPerson.getFirstName() + " " + eachPerson.getLastName();
+                    eventIDToBelongerID.put(eachEvent.getEventID(),name);
                     break;
                 }
             }
@@ -98,13 +146,13 @@ public class Data {
     public void processData(String personID)
     {
         separateEventByGender();
-        Person curPerson = null;
+//        Person currentPerson = null;
         Set<Person> parents = new HashSet<>();
         for (Person each: personList)
         {
             if (each.getPersonID().equals(personID))
             {
-                curPerson = each;
+                currentPerson = each;
                 break;
             }
         }
@@ -112,20 +160,20 @@ public class Data {
         Person mother = null;
         for (Person each: personList)
         {
-            if (curPerson.getFather().equals(each.getPersonID()))
+            if (currentPerson.getFather().equals(each.getPersonID()))
             {
                 parents.add(each);
                 father = each;
-
+                parentIDtoChildren.put(father.getPersonID(),currentPerson);
             }
-            if (curPerson.getMother().equals(each.getPersonID()))
+            if (currentPerson.getMother().equals(each.getPersonID()))
             {
                 parents.add(each);
                 mother = each;
-
+                parentIDtoChildren.put(mother.getPersonID(),currentPerson);
             }
         }
-        parentsTree.put(personID,parents);
+        personIDtoParents.put(personID,parents);
         if (father != null)
         {
             fillSidesEvent(father.getPersonID(),"father");
@@ -149,14 +197,16 @@ public class Data {
             {
                 parents.add(each);
                 father = each;
+                parentIDtoChildren.put(father.getPersonID(),person);
             }
             if (person.getFather().equals(each.getPersonID()))
             {
                 parents.add(each);
                 mother = each;
+                parentIDtoChildren.put(mother.getPersonID(),person);
             }
         }
-        parentsTree.put(person.getPersonID(),parents);
+        personIDtoParents.put(person.getPersonID(),parents);
         if (father != null)
         {
             fillSidesEvent(father.getPersonID(),side);
@@ -187,6 +237,37 @@ public class Data {
         }
     }
 
+    public void setEventList(List<Event> eventList) {
+
+        this.eventList = eventList;
+        for (Event each: eventList)
+        {
+            if (!eventFilter.containsKey(each.getEventType()))
+            {
+                eventFilter.put(each.getEventType(),true);
+            }
+        }
+    }
+
+    public Map<String, String> getEventIDToBelongerID() {
+        return eventIDToBelongerID;
+    }
+
+    public Person getPersonByID (String ID)
+    {
+        for (Person each: personList)
+        {
+            if (each.getPersonID().equals(ID))
+            {
+                return each;
+            }
+        }
+        return null;
+    }
+
+    public void setCurrentPerson(Person currentPerson) {
+        this.currentPerson = currentPerson;
+    }
 
     public List<Person> getPersonList() {
         return personList;
@@ -201,20 +282,11 @@ public class Data {
     }
 
     public List<Event> getEventList() {
-
         return eventList;
     }
 
-    public void setEventList(List<Event> eventList) {
-
-        this.eventList = eventList;
-        for (Event each: eventList)
-        {
-            if (!eventFilter.containsKey(each.getEventType()))
-            {
-                eventFilter.put(each.getEventType(),true);
-            }
-        }
+    public Person getCurrentPerson() {
+        return currentPerson;
     }
 
     public Map<String, Integer> getMarkerColor() {
