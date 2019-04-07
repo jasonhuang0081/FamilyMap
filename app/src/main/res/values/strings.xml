@@ -19,6 +19,8 @@
     <string name="eventCountryNtime"> </string>
     <string name="expandableFaimlyTitle">FAMILY </string>
     <string name="expandableEventTitle">LIFE EVENTS</string>
-
+    <string name="search">search</string>
+    <string name="filter">filter</string>
+    <string name="option">option</string>
 
 </resources>

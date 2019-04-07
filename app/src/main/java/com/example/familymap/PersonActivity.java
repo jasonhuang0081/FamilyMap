@@ -2,6 +2,7 @@ package com.example.familymap;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -173,17 +174,24 @@ public class PersonActivity extends AppCompatActivity {
             image.setImageDrawable(eventIcon);
             TextView eventInfo = eventItemView.findViewById(R.id.firstLine);
             TextView belongerName = eventItemView.findViewById(R.id.secondLine);
-            Event currentEvent = eventList.get(childPosition);
+            final Event currentEvent = eventList.get(childPosition);
             String firstInfo = currentEvent.getEventType() + ": "
                     + currentEvent.getCity() + ", " + currentEvent.getCountry()
                     + " (" + currentEvent.getYear() + ")";
-            String secondInfo = Data.getInstance().getEventIDToBelongerID().get(currentEvent.getEventID());
+            String personID = Data.getInstance().getEventIDToBelongerID().get(currentEvent.getEventID());
+            final Person person = Data.getInstance().getPersonByID(personID);
+            String secondInfo = person.getFirstName() + " " + person.getLastName();
             eventInfo.setText(firstInfo);
             belongerName.setText(secondInfo);
             eventItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     /// bring it to event view of this event
+                    ///////update the current person or event
+                    Data.getInstance().setCurrentPerson(person);
+                    Data.getInstance().setCurrentEvent(currentEvent);
+                    Intent intent = new Intent(PersonActivity.this, EventActivity.class);
+                    startActivity(intent);
                 }
             });
         }
@@ -191,7 +199,7 @@ public class PersonActivity extends AppCompatActivity {
             ImageView image = familyMemberView.findViewById(R.id.expandableImage);
             TextView name = familyMemberView.findViewById(R.id.firstLine);
             TextView relationship = familyMemberView.findViewById(R.id.secondLine);
-            Person person = familyMemberList.get(childPosition);
+            final Person person = familyMemberList.get(childPosition);
             String firstInfo = person.getFirstName() + " " + person.getLastName();
             String secondInfo = "";
             if(currentPerson.getFather().equals(person.getPersonID()))
@@ -226,6 +234,9 @@ public class PersonActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     /// bring it to person's activity
+                    Data.getInstance().setCurrentPerson(person);
+                    Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
+                    startActivity(intent);
                 }
             });
         }

@@ -1,6 +1,7 @@
 package com.example.familymap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ import model.Person;
 
 public class Data {
     private static Data single_instance;
+    private boolean isSignIn = false;
     private Person currentPerson;
     private Event currentEvent;
     private List<Person> personList = new ArrayList<>();
@@ -48,7 +50,6 @@ public class Data {
     {
         this.personID = personID;
         List<Event> personalEvents = new ArrayList<>();
-        List<Event> outputEvents = new ArrayList<>();
         for (Event each: shownEvent)
         {
             if (each.getPersonID().equals(personID))
@@ -56,17 +57,19 @@ public class Data {
                 personalEvents.add(each);
             }
         }
-        while(personalEvents.size() != 0)
+        Collections.sort(personalEvents, new  Comparator<Event> ()
         {
-            personalEvents.sort(new  Comparator<Event> ()
+            @Override
+            public int compare(Event first, Event second)
             {
-                @Override
-                public int compare(Event first, Event second)
+                int diff = first.getYear() - second.getYear();
+                if (diff == 0)
                 {
-                    return first.getYear() - second.getYear();
+                    diff = first.getEventType().compareTo(second.getEventType());
                 }
-            });
-        }
+                return diff;
+            }
+        });
         return personalEvents;
     }
 
@@ -169,8 +172,7 @@ public class Data {
                 {
                     String gender = eachPerson.getGender().toLowerCase();
                     eventIDToGender.put(eachEvent.getEventID(),gender);
-                    String name = eachPerson.getFirstName() + " " + eachPerson.getLastName();
-                    eventIDToBelongerID.put(eachEvent.getEventID(),name);
+                    eventIDToBelongerID.put(eachEvent.getEventID(),eachPerson.getPersonID());
                     break;
                 }
             }
@@ -302,12 +304,28 @@ public class Data {
         this.currentPerson = currentPerson;
     }
 
+    public void setCurrentEvent(Event currentEvent) {
+        this.currentEvent = currentEvent;
+    }
+
+    public Event getCurrentEvent() {
+        return currentEvent;
+    }
+
     public List<Person> getPersonList() {
         return personList;
     }
 
     public List<Event> getShownEvent() {
         return shownEvent;
+    }
+
+    public boolean isSignIn() {
+        return isSignIn;
+    }
+
+    public void setSignIn(boolean signIn) {
+        isSignIn = signIn;
     }
 
     public void setPersonList(List<Person> personList) {

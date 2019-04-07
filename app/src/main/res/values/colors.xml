@@ -6,4 +6,5 @@
     <color name="female_icon">#BC0007</color>
     <color name="male_icon">#2A5699</color>
     <color name="event_icon">#008000</color>
+    <color name="menu_icon">#faf0e6</color>
 </resources>

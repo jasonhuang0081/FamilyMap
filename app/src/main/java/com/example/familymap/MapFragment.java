@@ -54,7 +54,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         clickView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /// check if currentEvent is null, then enter person activity
+                /// check if currentEvent is null, then enter person activity when click on infoBox
                 if (currentEvent != null)
                 {
                     String personID = currentEvent.getPersonID();
@@ -72,50 +72,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        // Add a marker in Sydney and move the camera
         addMarker();
 
-        LatLng sydney = new LatLng(-34, 151);
-        map.animateCamera(CameraUpdateFactory.newLatLng(sydney));
+        if (Data.getInstance().getCurrentEvent() != null)
+        {
+            currentEvent = Data.getInstance().getCurrentEvent();
+            map.animateCamera(CameraUpdateFactory.newLatLng
+                    (new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())));
+            fillInfoBox();
+        }
+        else
+        {
+            // default position
+            map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+        }
+
+
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 currentEvent = (Event) marker.getTag();
-                List<Person> personList = Data.getInstance().getPersonList();
-                String name = "";
-                String gender = "m";
-                for (Person each: personList)
-                {
-                    if (each.getPersonID().equals(currentEvent.getPersonID()))
-                    {
-                        name = each.getFirstName() + " " + each.getLastName();
-                        gender = each.getGender();
-                        break;
-                    }
-                }
-                String eventDes = currentEvent.getEventType() + ": " + currentEvent.getCity();
-                String eventYear = currentEvent.getCountry() + " (" + Integer.toString(currentEvent.getYear()) + ")";
+                fillInfoBox();
 
-                if (gender.equals("m"))
-                {
-                    Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_male).
-                            colorRes(R.color.male_icon).sizeDp(40);
-                    image.setImageDrawable(genderIcon);
-                }
-                else
-                {
-                    Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_female).
-                            colorRes(R.color.female_icon).sizeDp(40);
-                    image.setImageDrawable(genderIcon);
-                }
-                nameDisplay.setText(name);
-                eventDisplay.setText(eventDes);
-                yearDisplay.setText(eventYear);
                 return true;
             }
         });
     }
 
+    private void fillInfoBox()
+    {
+        List<Person> personList = Data.getInstance().getPersonList();
+        String name = "";
+        String gender = "m";
+        for (Person each: personList)
+        {
+            if (each.getPersonID().equals(currentEvent.getPersonID()))
+            {
+                name = each.getFirstName() + " " + each.getLastName();
+                gender = each.getGender();
+                break;
+            }
+        }
+        String eventDes = currentEvent.getEventType() + ": " + currentEvent.getCity();
+        String eventYear = currentEvent.getCountry() + " (" + Integer.toString(currentEvent.getYear()) + ")";
+
+        if (gender.equals("m"))
+        {
+            Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_male).
+                    colorRes(R.color.male_icon).sizeDp(40);
+            image.setImageDrawable(genderIcon);
+        }
+        else
+        {
+            Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_female).
+                    colorRes(R.color.female_icon).sizeDp(40);
+            image.setImageDrawable(genderIcon);
+        }
+        nameDisplay.setText(name);
+        eventDisplay.setText(eventDes);
+        yearDisplay.setText(eventYear);
+    }
     private void addSpouseLine()
     {
 //        Polyline line = map.addPolyline(new PolylineOptions()
