@@ -243,8 +243,6 @@ public class LoginFragment extends Fragment {
                     {
                         output = firstNameString + " " + lastNameString;
                         personID = result.getPersonID();
-                        // after logging in here
-
                     }
                     else
                     {

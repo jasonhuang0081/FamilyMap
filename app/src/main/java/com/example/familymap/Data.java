@@ -1,6 +1,7 @@
 package com.example.familymap;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,8 @@ public class Data {
     private boolean isSpouseLine = true;
     private boolean isLifeLine = true;
     private boolean isFamilyTreeLie = true;
+    private String personID;
+
     public static Data getInstance()
     {
         if (single_instance == null)
@@ -43,16 +46,38 @@ public class Data {
 
     public List<Event> getPersonalEvents(String personID)
     {
+        this.personID = personID;
         List<Event> personalEvents = new ArrayList<>();
-        for (Event each: eventList)
+        List<Event> outputEvents = new ArrayList<>();
+        for (Event each: shownEvent)
         {
             if (each.getPersonID().equals(personID))
             {
                 personalEvents.add(each);
             }
         }
+        while(personalEvents.size() != 0)
+        {
+            personalEvents.sort(new  Comparator<Event> ()
+            {
+                @Override
+                public int compare(Event first, Event second)
+                {
+                    return first.getYear() - second.getYear();
+                }
+            });
+        }
         return personalEvents;
     }
+
+    public Map<String, Set<Person>> getPersonIDtoParents() {
+        return personIDtoParents;
+    }
+
+    public Map<String, Person> getParentIDtoChildren() {
+        return parentIDtoChildren;
+    }
+
     public List<Person> getImmediateFaimly(String personID)
     {
         List<Person> family = new ArrayList<>();
@@ -76,9 +101,10 @@ public class Data {
             }
         }
         Person person = getPersonByID(personID);
-        if (person.getSpouse() != null)
+        Person spouse = getPersonByID(person.getSpouse());
+        if (spouse != null)
         {
-            family.add(person);
+            family.add(spouse);
         }
         return family;
     }
@@ -97,7 +123,14 @@ public class Data {
         {
             tempList1.addAll(fatherSideEvent);
         }
-        ///////user's event added
+        // add user's event
+        for (Event each: eventList)
+        {
+            if (each.getPersonID().equals(currentPerson.getPersonID()))
+            {
+                tempList1.add(each);
+            }
+        }
         if (ismaleEvent)
         {
             for(Event each: tempList1)
