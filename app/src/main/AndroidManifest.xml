@@ -40,9 +40,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".PersonActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".EventActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".SettingActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

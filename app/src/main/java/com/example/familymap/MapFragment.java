@@ -1,6 +1,7 @@
 package com.example.familymap;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -20,11 +21,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import model.Event;
 import model.Person;
@@ -80,6 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
             map.animateCamera(CameraUpdateFactory.newLatLng
                     (new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())));
             fillInfoBox();
+            drawLines();
         }
         else
         {
@@ -93,7 +98,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
             public boolean onMarkerClick(Marker marker) {
                 currentEvent = (Event) marker.getTag();
                 fillInfoBox();
-
+                drawLines();
                 return true;
             }
         });
@@ -132,12 +137,69 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         eventDisplay.setText(eventDes);
         yearDisplay.setText(eventYear);
     }
+    public void drawLines()
+    {
+        map.clear();
+        addMarker();
+        if (currentEvent != null)
+        {
+            // draw all three lines
+            addSpouseLine();
+            addLifeStoryLine();
+            addFamilyTreeLine(currentEvent.getPersonID(),currentEvent,8);
+        }
+    }
     private void addSpouseLine()
     {
-//        Polyline line = map.addPolyline(new PolylineOptions()
-//                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
-//                .width(5)
-//                .color(Color.RED));
+        String personID = currentEvent.getPersonID();
+        Person curPerson = Data.getInstance().getPersonByID(personID);
+        String spouseID = curPerson.getSpouse();
+        List<Event> spouseEvents = Data.getInstance().getPersonalEvents(spouseID);
+        if (spouseEvents.size() != 0)
+        {
+            Event spouseEvent = spouseEvents.get(0);
+            String chosenColor = Data.getInstance().getSpouseLineColor();
+            Polyline line = map.addPolyline(new PolylineOptions()
+                    .add(new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())
+                            , new LatLng(spouseEvent.getLatitude(), spouseEvent.getLongitude()))
+                    .width(5)
+                    .color(convertColor(chosenColor)));
+        }
+
+    }
+    private void addLifeStoryLine()
+    {
+        String personID = currentEvent.getPersonID();
+        List<Event> personalEvents = Data.getInstance().getPersonalEvents(personID);
+        String chosenColor = Data.getInstance().getLifeLineColor();
+        for (Event eachEvent: personalEvents)
+        {
+            Polyline line = map.addPolyline(new PolylineOptions()
+                    .add(new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())
+                            , new LatLng(eachEvent.getLatitude(), eachEvent.getLongitude()))
+                    .width(5)
+                    .color(convertColor(chosenColor)));
+        }
+    }
+    private void addFamilyTreeLine(String personID, Event PersonEvent, double lineWidth)
+    {
+        Set<Person> parents = Data.getInstance().getPersonIDtoParents().get(personID);
+        String chosenColor = Data.getInstance().getFamilyLineColor();
+        for (Person parent: parents)
+        {
+            List<Event> parentOneEvents = Data.getInstance().getPersonalEvents(parent.getPersonID());
+            if (parentOneEvents.size() != 0)
+            {
+                Polyline line = map.addPolyline(new PolylineOptions()
+                        .add(new LatLng(parentOneEvents.get(0).getLatitude(), parentOneEvents.get(0).getLongitude())
+                                , new LatLng(PersonEvent.getLatitude(), PersonEvent.getLongitude()))
+                        .width((float)lineWidth)
+                        .color(convertColor(chosenColor)));
+                addFamilyTreeLine(parent.getPersonID(),parentOneEvents.get(0),lineWidth*0.5);
+            }
+
+        }
+
     }
     private void addMarker()
     {
@@ -174,9 +236,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
             }
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(new LatLng(lat, lon))
-                    .title(Data.getInstance().getEventList().get(i).getCity())
+                    .title(Data.getInstance().getShownEvent().get(i).getCity())
                     .icon(BitmapDescriptorFactory.defaultMarker(hue)));
-            marker.setTag(Data.getInstance().getEventList().get(i));
+            marker.setTag(Data.getInstance().getShownEvent().get(i));
         }
     }
     private int getNewColor()
@@ -197,5 +259,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
             color = 350;
         }
         return color;
+    }
+    private int convertColor(String color)
+    {
+        if (color.equals("blue"))
+        {
+            return -16776961;
+        }
+        else if (color.equals("red"))
+        {
+            return-65536;
+        }
+        else if (color.equals("magenta"))
+        {
+            return-65281;
+        }
+        else if (color.equals("green"))
+        {
+            return -16711936;
+        }
+        else if (color.equals("yellow"))
+        {
+            return-256;
+        }
+        else if (color.equals("black"))
+        {
+            return-16777216;
+        }
+        else
+        {
+            return 0;
+        }
     }
 }

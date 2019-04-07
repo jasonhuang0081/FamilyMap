@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
         settingIcon.setIcon(new IconDrawable(this, FontAwesomeIcons.fa_gear)
                 .colorRes(R.color.menu_icon)
                 .actionBarSize());
-        if (Data.getInstance().isSignIn())
-        {
-            SetMap();
-        }
+//        if (Data.getInstance().isSignIn())
+//        {
+//            SetMap();
+//        }
         searchIcon.setVisible(false);
         filterIcon.setVisible(false);
         settingIcon.setVisible(false);
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem menu) {
+        Intent intent = null;
         switch(menu.getItemId()) {
             case R.id.search:
                         // open activity
@@ -69,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
                 // open activity
                 return true;
             case R.id.setting:
-                // open activity
+                intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.home:
-                Intent intent = new Intent(this, MainActivity.class);
+                intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |
                         Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

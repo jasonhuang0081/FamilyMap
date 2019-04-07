@@ -22,5 +22,11 @@
     <string name="search">search</string>
     <string name="filter">filter</string>
     <string name="option">option</string>
+    <string name="lifeStory">Life Story Lines</string>
+    <string name="familyTreeline">Family Tree Lines</string>
+    <string name="spouseLine">Spouse Lines</string>
+    <string name="mapType">Map Type</string>
+    <string name="resyncData">Re-Sync Data</string>
+    <string name="logout">LogOut</string>
 
 </resources>

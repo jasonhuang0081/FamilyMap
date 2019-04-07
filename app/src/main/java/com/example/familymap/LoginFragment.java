@@ -51,11 +51,6 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-//        if (Data.getInstance().isSignIn())
-//        {
-//            MainActivity activity = (MainActivity) getActivity();
-//            activity.SetMap();
-//        }
 
         serverHost = v.findViewById(R.id.serverHost);
         serverPort = v.findViewById(R.id.serverPort);
@@ -249,7 +244,7 @@ public class LoginFragment extends Fragment {
                         output = firstNameString + " " + lastNameString;
                         personID = result.getPersonID();
                         //// sign in
-                        Data.getInstance().setSignIn(true);
+//                        Data.getInstance().setSignIn(true);
                     }
                     else
                     {

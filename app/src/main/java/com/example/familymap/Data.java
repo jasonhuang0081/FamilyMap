@@ -14,7 +14,6 @@ import model.Person;
 
 public class Data {
     private static Data single_instance;
-    private boolean isSignIn = false;
     private Person currentPerson;
     private Event currentEvent;
     private List<Person> personList = new ArrayList<>();
@@ -34,8 +33,20 @@ public class Data {
     private boolean isfatherSiceEvent = true;
     private boolean isSpouseLine = true;
     private boolean isLifeLine = true;
-    private boolean isFamilyTreeLie = true;
-    private String personID;
+    private boolean isFamilyTreeLine = true;
+
+    public String getMapType() {
+        return mapType;
+    }
+
+    public void setMapType(String mapType) {
+        this.mapType = mapType;
+    }
+
+    private String mapType = "normal";
+    private String spouseLineColor = "blue";
+    private String lifeLineColor = "red";
+    private String FamilyLineColor = "green";
 
     public static Data getInstance()
     {
@@ -48,7 +59,6 @@ public class Data {
 
     public List<Event> getPersonalEvents(String personID)
     {
-        this.personID = personID;
         List<Event> personalEvents = new ArrayList<>();
         for (Event each: shownEvent)
         {
@@ -79,6 +89,54 @@ public class Data {
 
     public Map<String, Person> getParentIDtoChildren() {
         return parentIDtoChildren;
+    }
+
+    public boolean isSpouseLine() {
+        return isSpouseLine;
+    }
+
+    public void setSpouseLine(boolean spouseLine) {
+        isSpouseLine = spouseLine;
+    }
+
+    public boolean isLifeLine() {
+        return isLifeLine;
+    }
+
+    public void setLifeLine(boolean lifeLine) {
+        isLifeLine = lifeLine;
+    }
+
+    public boolean isFamilyTreeLine() {
+        return isFamilyTreeLine;
+    }
+
+    public void setFamilyTreeLine(boolean familyTreeLine) {
+        isFamilyTreeLine = familyTreeLine;
+    }
+
+    public String getSpouseLineColor() {
+        return spouseLineColor;
+    }
+
+    public void setSpouseLineColor(String spouseLineColor) {
+        this.spouseLineColor = spouseLineColor;
+    }
+
+    public String getLifeLineColor() {
+        return lifeLineColor;
+    }
+
+    public void setLifeLineColor(String lifeLineColor) {
+        this.lifeLineColor = lifeLineColor;
+    }
+
+    public String getFamilyLineColor() {
+        return FamilyLineColor;
+    }
+
+    public void setFamilyLineColor(String familyLineColor) {
+        FamilyLineColor = familyLineColor;
     }
 
     public List<Person> getImmediateFaimly(String personID)
@@ -320,13 +378,6 @@ public class Data {
         return shownEvent;
     }
 
-    public boolean isSignIn() {
-        return isSignIn;
-    }
-
-    public void setSignIn(boolean signIn) {
-        isSignIn = signIn;
-    }
 
     public void setPersonList(List<Person> personList) {
         List<Person> people = this.personList = personList;
