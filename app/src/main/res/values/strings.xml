@@ -28,5 +28,7 @@
     <string name="mapType">Map Type</string>
     <string name="resyncData">Re-Sync Data</string>
     <string name="logout">LogOut</string>
+    <string name="fileterEventName">Event Name</string>
+    <string name="fileterNote">Selected to keep ... events</string>
 
 </resources>

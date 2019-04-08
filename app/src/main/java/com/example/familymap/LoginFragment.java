@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.net.URL;
 
+import model.Person;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import results.LoginResult;
@@ -267,7 +268,13 @@ public class LoginFragment extends Fragment {
             Toast.makeText(getActivity(), output, Toast.LENGTH_SHORT).show();
             if (output.equals(firstNameString + " " + lastNameString))
             {
+                Data.getInstance().setHostString(hostString);
+                Data.getInstance().setPortString(portString);
+                Data.getInstance().setUserString(userString);
+                Data.getInstance().setPasswordString(passwordString);
                 Data.getInstance().processData(personID);
+//                Person currentPerson = Data.getInstance().getPersonByID(personID);
+//                Data.getInstance().setCurrentPerson(currentPerson);
                 MainActivity activity = (MainActivity) getActivity();
                 activity.SetMap();
             }

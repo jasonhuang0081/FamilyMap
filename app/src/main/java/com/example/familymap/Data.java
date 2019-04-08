@@ -14,6 +14,10 @@ import model.Person;
 
 public class Data {
     private static Data single_instance;
+    private String hostString;
+    private String portString;
+    private String userString;
+    private String passwordString;
     private Person currentPerson;
     private Event currentEvent;
     private List<Person> personList = new ArrayList<>();
@@ -34,19 +38,11 @@ public class Data {
     private boolean isSpouseLine = true;
     private boolean isLifeLine = true;
     private boolean isFamilyTreeLine = true;
-
-    public String getMapType() {
-        return mapType;
-    }
-
-    public void setMapType(String mapType) {
-        this.mapType = mapType;
-    }
-
     private String mapType = "normal";
     private String spouseLineColor = "blue";
     private String lifeLineColor = "red";
     private String FamilyLineColor = "green";
+
 
     public static Data getInstance()
     {
@@ -95,6 +91,14 @@ public class Data {
         return isSpouseLine;
     }
 
+
+    public String getMapType() {
+        return mapType;
+    }
+
+    public void setMapType(String mapType) {
+        this.mapType = mapType;
+    }
     public void setSpouseLine(boolean spouseLine) {
         isSpouseLine = spouseLine;
     }
@@ -171,7 +175,7 @@ public class Data {
     }
 
 
-    private void filter()
+    public void filter()
     {
         shownEvent = new ArrayList<>();
         List<Event> tempList1 = new ArrayList<>();
@@ -279,6 +283,15 @@ public class Data {
         }
         filter();
     }
+
+    public Map<String, Boolean> getEventFilter() {
+        return eventFilter;
+    }
+
+    public void setEventFilter(Map<String, Boolean> eventFilter) {
+        this.eventFilter = eventFilter;
+    }
+
     private void recurTree(Person person, String side)
     {
         Set<Person> parents = new HashSet<>();
@@ -337,7 +350,8 @@ public class Data {
         {
             if (!eventFilter.containsKey(each.getEventType()))
             {
-                eventFilter.put(each.getEventType(),true);
+                String eventType = each.getEventType().toLowerCase();
+                eventFilter.put(eventType,true);
             }
         }
     }
@@ -398,4 +412,69 @@ public class Data {
     public void setMarkerColor(Map<String, Integer> markerColor) {
         this.markerColor = markerColor;
     }
+
+    public String getHostString() {
+        return hostString;
+    }
+
+    public void setHostString(String hostString) {
+        this.hostString = hostString;
+    }
+
+    public String getPortString() {
+        return portString;
+    }
+
+    public void setPortString(String portString) {
+        this.portString = portString;
+    }
+
+    public String getUserString() {
+        return userString;
+    }
+
+    public void setUserString(String userString) {
+        this.userString = userString;
+    }
+
+    public String getPasswordString() {
+        return passwordString;
+    }
+
+    public void setPasswordString(String passwordString) {
+        this.passwordString = passwordString;
+    }
+
+    public boolean isIsmaleEvent() {
+        return ismaleEvent;
+    }
+
+    public void setIsmaleEvent(boolean ismaleEvent) {
+        this.ismaleEvent = ismaleEvent;
+    }
+
+    public boolean isIsfemaleEvent() {
+        return isfemaleEvent;
+    }
+
+    public void setIsfemaleEvent(boolean isfemaleEvent) {
+        this.isfemaleEvent = isfemaleEvent;
+    }
+
+    public boolean isIsmotherSideEvent() {
+        return ismotherSideEvent;
+    }
+
+    public void setIsmotherSideEvent(boolean ismotherSideEvent) {
+        this.ismotherSideEvent = ismotherSideEvent;
+    }
+
+    public boolean isIsfatherSiceEvent() {
+        return isfatherSiceEvent;
+    }
+
+    public void setIsfatherSiceEvent(boolean isfatherSiceEvent) {
+        this.isfatherSiceEvent = isfatherSiceEvent;
+    }
+
 }

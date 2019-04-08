@@ -55,6 +55,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         yearDisplay = view.findViewById(R.id.eventCountryNtime);
         image = view.findViewById(R.id.image);
         clickView = view.findViewById(R.id.clickView);
+//        List<Event> personalEvents = Data.getInstance().getPersonalEvents(Data.getInstance().getCurrentPerson().getPersonID());
+//        if (personalEvents.size() != 0)
+//        {
+//            currentEvent = personalEvents.get(0);
+//            Data.getInstance().setCurrentEvent(currentEvent);
+//        }
         clickView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,10 +78,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         return view;
     }
 
+    public void setMapType()
+    {
+        int mapTypeInt = 1;
+        if (Data.getInstance().getMapType().equals("normal"))
+        {
+            mapTypeInt = 1;
+        }
+        else if (Data.getInstance().getMapType().equals("hybrid"))
+        {
+            mapTypeInt = 2;
+        }
+        else if (Data.getInstance().getMapType().equals("satellite"))
+        {
+            mapTypeInt = 3;
+        }
+        else if (Data.getInstance().getMapType().equals("terrain"))
+        {
+            mapTypeInt = 4;
+        }
+        map.setMapType(mapTypeInt);
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-
+        setMapType();
         addMarker();
 
         if (Data.getInstance().getCurrentEvent() != null)
@@ -103,7 +130,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
             }
         });
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (currentEvent != null)
+        {
+            Data.getInstance().filter();
+            drawLines();
+            setMapType();
+        }
 
+    }
     private void fillInfoBox()
     {
         List<Person> personList = Data.getInstance().getPersonList();
@@ -144,9 +181,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         if (currentEvent != null)
         {
             // draw all three lines
-            addSpouseLine();
-            addLifeStoryLine();
-            addFamilyTreeLine(currentEvent.getPersonID(),currentEvent,8);
+            if (Data.getInstance().isSpouseLine())
+            {
+                addSpouseLine();
+            }
+            if (Data.getInstance().isLifeLine())
+            {
+                addLifeStoryLine();
+            }
+            if (Data.getInstance().isFamilyTreeLine())
+            {
+                addFamilyTreeLine(currentEvent.getPersonID(),currentEvent,8);
+            }
         }
     }
     private void addSpouseLine()

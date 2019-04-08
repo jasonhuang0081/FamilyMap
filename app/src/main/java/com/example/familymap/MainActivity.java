@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
                         // open activity
                 return true;
             case R.id.filter:
-                // open activity
+                intent = new Intent(this, FilterActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.setting:
                 intent = new Intent(this, SettingActivity.class);
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(menu);
         }
     }
+
     public void SetMap()
     {
         searchIcon.setVisible(true);

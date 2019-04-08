@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:text="@string/lifeStory" />
 
         <Spinner
@@ -28,8 +28,7 @@
             android:id="@+id/lifeStorySwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.1"
-            android:checked="true" />
+            android:layout_weight="0.1" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:text="@string/familyTreeline" />
 
         <Spinner
@@ -53,8 +52,7 @@
             android:id="@+id/familyTreeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.1"
-            android:checked="true" />
+            android:layout_weight="0.1" />
     </LinearLayout>
 
     <LinearLayout
@@ -65,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.2"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:text="@string/spouseLine" />
 
         <Spinner
@@ -78,8 +76,7 @@
             android:id="@+id/spouseSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.1"
-            android:checked="true" />
+            android:layout_weight="0.1" />
     </LinearLayout>
 
     <LinearLayout
@@ -90,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.4"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:text="@string/mapType" />
 
         <Spinner
@@ -105,13 +102,13 @@
         android:id="@+id/reSync"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:text="@string/resyncData" />
 
     <TextView
         android:id="@+id/logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:text="@string/logout" />
 </LinearLayout>

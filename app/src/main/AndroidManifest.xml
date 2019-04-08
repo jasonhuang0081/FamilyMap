@@ -45,6 +45,8 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".SettingActivity"
             android:parentActivityName=".MainActivity" />
+        <activity android:name=".FilterActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
