@@ -223,6 +223,25 @@ public class Data {
                 shownEvent.add(each);
             }
         }
+        // check to see if current event is filtered away
+
+        if (currentEvent != null)
+        {
+            boolean isExist = false;
+            for (Event each: shownEvent)
+            {
+                if (each.getEventID().equals(currentEvent.getEventID()))
+                {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist)
+            {
+                currentEvent = null;
+            }
+        }
+
     }
     private void separateEventByGender()
     {

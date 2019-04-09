@@ -7,6 +7,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,27 +105,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         map = googleMap;
         setMapType();
         addMarker();
-
-        if (Data.getInstance().getCurrentEvent() != null)
-        {
-            currentEvent = Data.getInstance().getCurrentEvent();
-            map.animateCamera(CameraUpdateFactory.newLatLng
-                    (new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())));
-            fillInfoBox();
-            drawLines();
-        }
-        else
-        {
-            // default position
-            map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
-        }
+        // default position
+        map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+//        if (Data.getInstance().getCurrentEvent() != null)
+//        {
+//            currentEvent = Data.getInstance().getCurrentEvent();
+//            map.animateCamera(CameraUpdateFactory.newLatLng
+//                    (new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())));
+//            fillInfoBox();
+//            map.clear();
+//            addMarker();
+//            drawLines();
+//        }
+//        else
+//        {
+//            // default position
+//            map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+//        }
 
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 currentEvent = (Event) marker.getTag();
+                Data.getInstance().setCurrentEvent(currentEvent);
                 fillInfoBox();
+                map.clear();
+                addMarker();
                 drawLines();
                 return true;
             }
@@ -133,9 +140,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
     @Override
     public void onResume() {
         super.onResume();
-        if (currentEvent != null)
+        if (map != null)
         {
             Data.getInstance().filter();
+            currentEvent = Data.getInstance().getCurrentEvent();
+            fillInfoBox();
+            map.clear();
+            addMarker();
             drawLines();
             setMapType();
         }
@@ -143,41 +154,55 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
     }
     private void fillInfoBox()
     {
-        List<Person> personList = Data.getInstance().getPersonList();
-        String name = "";
-        String gender = "m";
-        for (Person each: personList)
+        String firstLineInfo = "";
+        String secondLineInfo = "";
+        String thirdLineInfo = "";
+        if (currentEvent != null)
         {
-            if (each.getPersonID().equals(currentEvent.getPersonID()))
-            {
-                name = each.getFirstName() + " " + each.getLastName();
-                gender = each.getGender();
-                break;
-            }
-        }
-        String eventDes = currentEvent.getEventType() + ": " + currentEvent.getCity();
-        String eventYear = currentEvent.getCountry() + " (" + Integer.toString(currentEvent.getYear()) + ")";
+            List<Person> personList = Data.getInstance().getPersonList();
 
-        if (gender.equals("m"))
-        {
-            Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_male).
-                    colorRes(R.color.male_icon).sizeDp(40);
-            image.setImageDrawable(genderIcon);
+            String gender = "m";
+            for (Person each: personList)
+            {
+                if (each.getPersonID().equals(currentEvent.getPersonID()))
+                {
+                    firstLineInfo = each.getFirstName() + " " + each.getLastName();
+                    gender = each.getGender();
+                    break;
+                }
+            }
+            secondLineInfo = currentEvent.getEventType() + ": " + currentEvent.getCity();
+            thirdLineInfo = currentEvent.getCountry() + " (" + Integer.toString(currentEvent.getYear()) + ")";
+
+            if (gender.equals("m"))
+            {
+                Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_male).
+                        colorRes(R.color.male_icon).sizeDp(40);
+                image.setImageDrawable(genderIcon);
+            }
+            else
+            {
+                Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_female).
+                        colorRes(R.color.female_icon).sizeDp(40);
+                image.setImageDrawable(genderIcon);
+            }
         }
         else
         {
-            Drawable genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_female).
-                    colorRes(R.color.female_icon).sizeDp(40);
-            image.setImageDrawable(genderIcon);
+            firstLineInfo = "Click on a marker";
+            secondLineInfo = "to see event details";
+            Drawable original = ContextCompat.getDrawable(getActivity(), android.R.drawable.sym_def_app_icon);
+            image.setImageDrawable(original);
         }
-        nameDisplay.setText(name);
-        eventDisplay.setText(eventDes);
-        yearDisplay.setText(eventYear);
+        nameDisplay.setText(firstLineInfo);
+        eventDisplay.setText(secondLineInfo);
+        yearDisplay.setText(thirdLineInfo);
+
     }
     public void drawLines()
     {
-        map.clear();
-        addMarker();
+//        map.clear();
+//        addMarker();
         if (currentEvent != null)
         {
             // draw all three lines

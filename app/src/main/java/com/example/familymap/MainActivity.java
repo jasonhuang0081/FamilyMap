@@ -64,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = null;
         switch(menu.getItemId()) {
             case R.id.search:
-                        // open activity
+                intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.filter:
                 intent = new Intent(this, FilterActivity.class);
