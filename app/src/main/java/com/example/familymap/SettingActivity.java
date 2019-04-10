@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Event;
 import requests.LoginRequest;
 import results.LoginResult;
 
@@ -154,6 +155,7 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
@@ -192,6 +194,8 @@ public class SettingActivity extends AppCompatActivity {
             if (output.equals("Re-Sync Succeed!"))
             {
                 Data.getInstance().processData(personID);
+                Data.getInstance().setFatherSideEvent(new ArrayList<Event>());
+                Data.getInstance().setMotherSideEvent(new ArrayList<Event>());
             }
         }
     }

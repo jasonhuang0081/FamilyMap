@@ -242,33 +242,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         String personID = currentEvent.getPersonID();
         List<Event> personalEvents = Data.getInstance().getPersonalEvents(personID);
         String chosenColor = Data.getInstance().getLifeLineColor();
-        for (Event eachEvent: personalEvents)
+        for (int i = 0; i < personalEvents.size(); i++)
         {
-            Polyline line = map.addPolyline(new PolylineOptions()
-                    .add(new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())
-                            , new LatLng(eachEvent.getLatitude(), eachEvent.getLongitude()))
-                    .width(5)
-                    .color(convertColor(chosenColor)));
+            if (currentEvent.getEventID().equals(personalEvents.get(i).getEventID()) && ((i+1) < personalEvents.size()))
+            {
+                Polyline line = map.addPolyline(new PolylineOptions()
+                        .add(new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())
+                                , new LatLng(personalEvents.get(i+1).getLatitude(), personalEvents.get(i+1).getLongitude()))
+                        .width(5)
+                        .color(convertColor(chosenColor)));
+            }
         }
     }
     private void addFamilyTreeLine(String personID, Event PersonEvent, double lineWidth)
     {
         Set<Person> parents = Data.getInstance().getPersonIDtoParents().get(personID);
         String chosenColor = Data.getInstance().getFamilyLineColor();
-        for (Person parent: parents)
+        if (parents != null)
         {
-            List<Event> parentOneEvents = Data.getInstance().getPersonalEvents(parent.getPersonID());
-            if (parentOneEvents.size() != 0)
+            for (Person parent: parents)
             {
-                Polyline line = map.addPolyline(new PolylineOptions()
-                        .add(new LatLng(parentOneEvents.get(0).getLatitude(), parentOneEvents.get(0).getLongitude())
-                                , new LatLng(PersonEvent.getLatitude(), PersonEvent.getLongitude()))
-                        .width((float)lineWidth)
-                        .color(convertColor(chosenColor)));
-                addFamilyTreeLine(parent.getPersonID(),parentOneEvents.get(0),lineWidth*0.5);
-            }
+                List<Event> parentOneEvents = Data.getInstance().getPersonalEvents(parent.getPersonID());
+                if (parentOneEvents.size() != 0)
+                {
+                    Polyline line = map.addPolyline(new PolylineOptions()
+                            .add(new LatLng(parentOneEvents.get(0).getLatitude(), parentOneEvents.get(0).getLongitude())
+                                    , new LatLng(PersonEvent.getLatitude(), PersonEvent.getLongitude()))
+                            .width((float)lineWidth)
+                            .color(convertColor(chosenColor)));
+                    addFamilyTreeLine(parent.getPersonID(),parentOneEvents.get(0),lineWidth*0.5);
+                }
 
+            }
         }
+
 
     }
     private void addMarker()

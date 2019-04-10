@@ -272,8 +272,8 @@ public class LoginFragment extends Fragment {
                 Data.getInstance().setPortString(portString);
                 Data.getInstance().setUserString(userString);
                 Data.getInstance().setPasswordString(passwordString);
-                Person user = Data.getInstance().getPersonByID(personID);
-                Data.getInstance().setUser(user);
+//                Person user = Data.getInstance().getPersonByID(personID);
+//                Data.getInstance().setUser(user);
                 Data.getInstance().processData(personID);
 //                Person currentPerson = Data.getInstance().getPersonByID(personID);
 //                Data.getInstance().setCurrentPerson(currentPerson);

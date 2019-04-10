@@ -38,6 +38,7 @@ public class FilterActivity extends AppCompatActivity {
 
     private void convertDataToList()
     {
+        filterList = new ArrayList<>();
         for (Map.Entry<String, Boolean> entry : Data.getInstance().getEventFilter().entrySet())
         {
             String note = "Select to show " + entry.getKey() + " events";
@@ -88,6 +89,7 @@ public class FilterActivity extends AppCompatActivity {
                         temp.put(currentItem.getEventName(),isChecked);
                         Data.getInstance().setEventFilter(temp);
                     }
+                    convertDataToList();
                 }
             });
         }

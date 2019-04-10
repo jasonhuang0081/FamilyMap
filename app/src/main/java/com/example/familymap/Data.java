@@ -18,7 +18,6 @@ public class Data {
     private String portString;
     private String userString;
     private String passwordString;
-    private Person user;
     private Person currentPerson;
     private Event currentEvent;
     private List<Person> personList = new ArrayList<>();
@@ -189,14 +188,12 @@ public class Data {
         {
             tempList1.addAll(fatherSideEvent);
         }
-        // add user's event
-        for (Event each: eventList)
-        {
-            if (each.getPersonID().equals(user.getPersonID()))
-            {
-                tempList1.add(each);
-            }
-        }
+        // get events that's are mother side nor father side
+        List<Event> otherEvents = new ArrayList<>();
+        otherEvents.addAll(eventList);
+        otherEvents.removeAll(motherSideEvent);
+        otherEvents.removeAll(fatherSideEvent);
+        tempList1.addAll(otherEvents);
         if (ismaleEvent)
         {
             for(Event each: tempList1)
@@ -372,6 +369,7 @@ public class Data {
     public void setEventList(List<Event> eventList) {
 
         this.eventList = eventList;
+        eventFilter = new TreeMap<>();
         for (Event each: eventList)
         {
             if (!eventFilter.containsKey(each.getEventType()))
@@ -503,7 +501,11 @@ public class Data {
         this.isfatherSiceEvent = isfatherSiceEvent;
     }
 
-    public void setUser(Person user) {
-        this.user = user;
+    public void setMotherSideEvent(List<Event> motherSideEvent) {
+        this.motherSideEvent = motherSideEvent;
+    }
+
+    public void setFatherSideEvent(List<Event> fatherSideEvent) {
+        this.fatherSideEvent = fatherSideEvent;
     }
 }
