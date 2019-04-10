@@ -110,9 +110,11 @@ public class SearchActivity extends AppCompatActivity {
             firstLineInfo =  itemView.findViewById(R.id.firstLineInfo);
             secondLineInfo = itemView.findViewById(R.id.secondLineInfo);
             image =  itemView.findViewById(R.id.searchResultImage);
+            itemView.setOnClickListener(this);
         }
         public void bind(SearchItem item) {
             currentItem = item;
+
             firstLineInfo.setText(item.getFirstLineInfo());
             secondLineInfo.setText(item.getSecondLineInfo());
             eventIcon = new IconDrawable(getApplicationContext(), FontAwesomeIcons.fa_map_marker).

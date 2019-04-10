@@ -105,23 +105,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         map = googleMap;
         setMapType();
         addMarker();
-        // default position
-        map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
-//        if (Data.getInstance().getCurrentEvent() != null)
-//        {
-//            currentEvent = Data.getInstance().getCurrentEvent();
-//            map.animateCamera(CameraUpdateFactory.newLatLng
-//                    (new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())));
-//            fillInfoBox();
-//            map.clear();
-//            addMarker();
-//            drawLines();
-//        }
-//        else
-//        {
-//            // default position
-//            map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
-//        }
+
+        if (Data.getInstance().getCurrentEvent() != null)
+        {
+            currentEvent = Data.getInstance().getCurrentEvent();
+            map.animateCamera(CameraUpdateFactory.newLatLng
+                    (new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())));
+            fillInfoBox();
+            map.clear();
+            addMarker();
+            drawLines();
+        }
+        else
+        {
+            // default position
+            map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+        }
 
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {

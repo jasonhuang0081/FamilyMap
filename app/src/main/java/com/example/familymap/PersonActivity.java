@@ -204,19 +204,28 @@ public class PersonActivity extends AppCompatActivity {
             final Person person = familyMemberList.get(childPosition);
             String firstInfo = person.getFirstName() + " " + person.getLastName();
             String secondInfo = "";
-            if(currentPerson.getFather().equals(person.getPersonID()))
+            if (currentPerson.getFather() != null)
             {
-                secondInfo = "Father";
+                if(currentPerson.getFather().equals(person.getPersonID()))
+                {
+                    secondInfo = "Father";
+                }
             }
-            else if (currentPerson.getMother().equals(person.getPersonID()))
+            if (currentPerson.getMother() != null)
             {
-                secondInfo = "Mother";
+                if (currentPerson.getMother().equals(person.getPersonID()))
+                {
+                    secondInfo = "Mother";
+                }
             }
-            else if(currentPerson.getSpouse().equals(person.getPersonID()))
+            if (currentPerson.getSpouse() != null)
             {
-                secondInfo = "Spouse";
+                if(currentPerson.getSpouse().equals(person.getPersonID()))
+                {
+                    secondInfo = "Spouse";
+                }
             }
-            else
+            if (secondInfo.equals(""))
             {
                 secondInfo = "Child";
             }

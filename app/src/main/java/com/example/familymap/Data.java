@@ -18,6 +18,7 @@ public class Data {
     private String portString;
     private String userString;
     private String passwordString;
+    private Person user;
     private Person currentPerson;
     private Event currentEvent;
     private List<Person> personList = new ArrayList<>();
@@ -191,7 +192,7 @@ public class Data {
         // add user's event
         for (Event each: eventList)
         {
-            if (each.getPersonID().equals(currentPerson.getPersonID()))
+            if (each.getPersonID().equals(user.getPersonID()))
             {
                 tempList1.add(each);
             }
@@ -218,7 +219,7 @@ public class Data {
         }
         for (Event each: tempList2)
         {
-            if (eventFilter.get(each.getEventType()))
+            if (eventFilter.get(each.getEventType().toLowerCase()))
             {
                 shownEvent.add(each);
             }
@@ -318,17 +319,23 @@ public class Data {
         Person mother = null;
         for (Person each: personList)
         {
-            if (person.getMother().equals(each.getPersonID()))
+            if (person.getMother() != null)
             {
-                parents.add(each);
-                father = each;
-                parentIDtoChildren.put(father.getPersonID(),person);
+                if (person.getMother().equals(each.getPersonID()))
+                {
+                    parents.add(each);
+                    father = each;
+                    parentIDtoChildren.put(father.getPersonID(),person);
+                }
             }
-            if (person.getFather().equals(each.getPersonID()))
+            if (person.getMother() != null)
             {
-                parents.add(each);
-                mother = each;
-                parentIDtoChildren.put(mother.getPersonID(),person);
+                if (person.getFather().equals(each.getPersonID()))
+                {
+                    parents.add(each);
+                    mother = each;
+                    parentIDtoChildren.put(mother.getPersonID(),person);
+                }
             }
         }
         personIDtoParents.put(person.getPersonID(),parents);
@@ -496,4 +503,7 @@ public class Data {
         this.isfatherSiceEvent = isfatherSiceEvent;
     }
 
+    public void setUser(Person user) {
+        this.user = user;
+    }
 }
