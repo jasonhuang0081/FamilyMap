@@ -193,6 +193,8 @@ public class SettingActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), output, Toast.LENGTH_SHORT).show();
             if (output.equals("Re-Sync Succeed!"))
             {
+                Data.getInstance().setMotherSideEvent(new ArrayList<Event>());
+                Data.getInstance().setFatherSideEvent(new ArrayList<Event>());
                 Data.getInstance().processData(personID);
                 Data.getInstance().setFatherSideEvent(new ArrayList<Event>());
                 Data.getInstance().setMotherSideEvent(new ArrayList<Event>());

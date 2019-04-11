@@ -242,12 +242,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         String personID = currentEvent.getPersonID();
         List<Event> personalEvents = Data.getInstance().getPersonalEvents(personID);
         String chosenColor = Data.getInstance().getLifeLineColor();
+//        Event tempEvent = currentEvent;
+//        for (Event each: personalEvents)
+//        {
+//            Polyline line = map.addPolyline(new PolylineOptions()
+//                        .add(new LatLng(tempEvent.getLatitude(), tempEvent.getLongitude())
+//                                , new LatLng(each.getLatitude(), each.getLongitude()))
+//                        .width(5)
+//                        .color(convertColor(chosenColor)));
+//            tempEvent = each;
+//        }
         for (int i = 0; i < personalEvents.size(); i++)
         {
-            if (currentEvent.getEventID().equals(personalEvents.get(i).getEventID()) && ((i+1) < personalEvents.size()))
+            if (personalEvents.get(i) != null && ((i+1) < personalEvents.size()))
             {
                 Polyline line = map.addPolyline(new PolylineOptions()
-                        .add(new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude())
+                        .add(new LatLng(personalEvents.get(i).getLatitude(), personalEvents.get(i).getLongitude())
                                 , new LatLng(personalEvents.get(i+1).getLatitude(), personalEvents.get(i+1).getLongitude()))
                         .width(5)
                         .color(convertColor(chosenColor)));
