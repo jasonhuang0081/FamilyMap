@@ -1,4 +1,4 @@
-package com.example.familymap;
+package com.example.familymap.settingFunction;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,6 +13,11 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.familymap.model.Data;
+import com.example.familymap.mainActivityFunction.MainActivity;
+import com.example.familymap.R;
+import com.example.familymap.loginFunction.Proxy;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +27,6 @@ import requests.LoginRequest;
 import results.LoginResult;
 
 public class SettingActivity extends AppCompatActivity {
-    private Switch lifeStorySwitch;
-    private Switch familyTreeSwitch;
-    private Switch spouseSwitch;
-    private Spinner lifeStorySpinner;
-    private Spinner familyTreeSpinner;
-    private Spinner spouseSpinner;
-    private Spinner mapTypeSpinner;
-    private View reSyncView;
-    private View logoutView;
     private List<String> colorOptions = new ArrayList<>();
     private List<String> mapOption = new ArrayList<>();
 
@@ -39,13 +35,13 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        lifeStorySwitch = findViewById(R.id.lifeStorySwitch);
-        familyTreeSwitch = findViewById(R.id.familyTreeSwitch);
-        spouseSwitch = findViewById(R.id.spouseSwitch);
-        lifeStorySpinner = findViewById(R.id.lifeStorySpinner);
-        familyTreeSpinner = findViewById(R.id.familyTreeSpinner);
-        spouseSpinner = findViewById(R.id.spouseSpinner);
-        mapTypeSpinner = findViewById(R.id.mapSpinner);
+        Switch lifeStorySwitch = findViewById(R.id.lifeStorySwitch);
+        Switch familyTreeSwitch = findViewById(R.id.familyTreeSwitch);
+        Switch spouseSwitch = findViewById(R.id.spouseSwitch);
+        Spinner lifeStorySpinner = findViewById(R.id.lifeStorySpinner);
+        Spinner familyTreeSpinner = findViewById(R.id.familyTreeSpinner);
+        Spinner spouseSpinner = findViewById(R.id.spouseSpinner);
+        Spinner mapTypeSpinner = findViewById(R.id.mapSpinner);
         colorOptions.add("blue");
         colorOptions.add("red");
         colorOptions.add("green");
@@ -53,7 +49,7 @@ public class SettingActivity extends AppCompatActivity {
         colorOptions.add("yellow");
         colorOptions.add("black");
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, colorOptions);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, colorOptions);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         lifeStorySpinner.setAdapter(dataAdapter);
         lifeStorySpinner.setSelection(dataAdapter.getPosition(Data.getInstance().getLifeLineColor()));
@@ -104,7 +100,7 @@ public class SettingActivity extends AppCompatActivity {
         mapOption.add("hybrid");
         mapOption.add("satellite");
         mapOption.add("terrain");
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mapOption);
+        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mapOption);
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mapTypeSpinner.setAdapter(dataAdapter2);
         mapTypeSpinner.setSelection(dataAdapter2.getPosition(Data.getInstance().getMapType()));
@@ -143,14 +139,14 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
         spouseSwitch.setChecked(Data.getInstance().isSpouseLine());
-        reSyncView = findViewById(R.id.reSync);
+        View reSyncView = findViewById(R.id.reSync);
         reSyncView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new reSync().execute();
             }
         });
-        logoutView = findViewById(R.id.logout);
+        View logoutView = findViewById(R.id.logout);
         logoutView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -196,8 +192,6 @@ public class SettingActivity extends AppCompatActivity {
                 Data.getInstance().setMotherSideEvent(new ArrayList<Event>());
                 Data.getInstance().setFatherSideEvent(new ArrayList<Event>());
                 Data.getInstance().processData(personID);
-                Data.getInstance().setFatherSideEvent(new ArrayList<Event>());
-                Data.getInstance().setMotherSideEvent(new ArrayList<Event>());
             }
         }
     }

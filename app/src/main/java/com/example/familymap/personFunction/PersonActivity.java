@@ -1,13 +1,11 @@
-package com.example.familymap;
+package com.example.familymap.personFunction;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,10 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.familymap.model.Data;
+import com.example.familymap.eventFunction.EventActivity;
+import com.example.familymap.mainActivityFunction.MainActivity;
+import com.example.familymap.R;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
@@ -26,9 +28,9 @@ import model.Person;
 
 public class PersonActivity extends AppCompatActivity {
     private Person currentPerson;
-    Drawable eventIcon;
-    Drawable femaleIcon;
-    Drawable maleIcon;
+    private Drawable eventIcon;
+    private Drawable femaleIcon;
+    private Drawable maleIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,7 @@ public class PersonActivity extends AppCompatActivity {
             genderPrint = "Female";
         }
         gender.setText(genderPrint);
-        List<Person> familyMemberList = Data.getInstance().getImmediateFaimly(currentPerson.getPersonID());
+        List<Person> familyMemberList = Data.getInstance().getImmediateFamily(currentPerson.getPersonID());
         List<Event> eventList = Data.getInstance().getPersonalEvents(currentPerson.getPersonID());
         expandableListView.setAdapter(new ExpandableListAdapter(familyMemberList, eventList));
 

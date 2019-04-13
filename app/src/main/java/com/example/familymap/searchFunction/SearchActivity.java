@@ -1,8 +1,7 @@
-package com.example.familymap;
+package com.example.familymap.searchFunction;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,26 +10,25 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.example.familymap.model.Data;
+import com.example.familymap.eventFunction.EventActivity;
+import com.example.familymap.mainActivityFunction.MainActivity;
+import com.example.familymap.personFunction.PersonActivity;
+import com.example.familymap.R;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import model.Event;
-import model.Person;
 
 public class SearchActivity extends AppCompatActivity {
-    List<SearchItem> SearchResultList = new ArrayList<>();
+    private List<SearchItem> SearchResultList = new ArrayList<>();
     private SearchAdapter adapter;
     private RecyclerView recyclerView;
-    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +36,13 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         recyclerView = findViewById(R.id.searchResultView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        searchView = findViewById(R.id.searchBar);
+        SearchView searchView = findViewById(R.id.searchBar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
             @Override
             public boolean onQueryTextSubmit(String query)
             {
-                SearchResultList = doSearching(query.toLowerCase());
+                SearchResultList = Data.getInstance().doSearching(query.toLowerCase());
                 if (adapter == null) {
                     adapter = new SearchActivity.SearchAdapter();
                     recyclerView.setAdapter(adapter);
@@ -61,40 +59,7 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
-    private List<SearchItem> doSearching(String input)
-    {
-        List<Person> personList = Data.getInstance().getPersonList();
-        List<Event> eventList = Data.getInstance().getShownEvent();
-        List<SearchItem> result = new ArrayList<>();
-        for (Person each: personList)
-        {
-            if (each.getFirstName().toLowerCase().contains(input) || each.getLastName().toLowerCase().contains(input))
-            {
-                String firstLine = each.getFirstName() + " " + each.getLastName();
-                boolean isMale = false;
-                if (each.getGender().equals("m"))
-                {
-                    isMale = true;
-                }
-                result.add(new SearchItem(firstLine,"",false,isMale,each,null));
-            }
-        }
-        for (Event each: eventList)
-        {
-            if (each.getCountry().toLowerCase().contains(input) || each.getCity().toLowerCase().contains(input)
-                    || each.getEventType().toLowerCase().contains(input))
-            {
-                String firstLine = each.getEventType() + ": " + each.getCity() + ", " + each.getCountry()
-                        + " (" + each.getYear() + ")";
-                String personID = Data.getInstance().getEventIDToBelongerID().get(each.getEventID());
-                Person person = Data.getInstance().getPersonByID(personID);
-                String secondLine = person.getFirstName() + " " + person.getLastName();
-                result.add(new SearchItem(firstLine,secondLine,true,false,null,each));
 
-            }
-        }
-        return result;
-    }
 
     private class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView firstLineInfo;
@@ -105,14 +70,14 @@ public class SearchActivity extends AppCompatActivity {
         Drawable femaleIcon;
         Drawable maleIcon;
 
-        public ItemHolder(LayoutInflater inflater, ViewGroup parent) {
+        ItemHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_search_result, parent, false));
             firstLineInfo =  itemView.findViewById(R.id.firstLineInfo);
             secondLineInfo = itemView.findViewById(R.id.secondLineInfo);
             image =  itemView.findViewById(R.id.searchResultImage);
             itemView.setOnClickListener(this);
         }
-        public void bind(SearchItem item) {
+        void bind(SearchItem item) {
             currentItem = item;
 
             firstLineInfo.setText(item.getFirstLineInfo());

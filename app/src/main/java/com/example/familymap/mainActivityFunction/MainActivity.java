@@ -1,4 +1,4 @@
-package com.example.familymap;
+package com.example.familymap.mainActivityFunction;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.familymap.R;
+import com.example.familymap.filterFunction.FilterActivity;
+import com.example.familymap.loginFunction.LoginFragment;
+import com.example.familymap.searchFunction.SearchActivity;
+import com.example.familymap.settingFunction.SettingActivity;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;

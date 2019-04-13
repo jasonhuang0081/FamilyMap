@@ -1,4 +1,4 @@
-package com.example.familymap;
+package com.example.familymap.filterFunction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,20 +12,23 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.familymap.model.Data;
+import com.example.familymap.mainActivityFunction.MainActivity;
+import com.example.familymap.R;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class FilterActivity extends AppCompatActivity {
-    List<FilterItem> filterList = new ArrayList<>();
+    private List<FilterItem> filterList = new ArrayList<>();
     private FilterAdapter adapter;
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
-        recyclerView = findViewById(R.id.filter_recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.filter_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         convertDataToList();
         if (adapter == null) {
@@ -60,7 +63,7 @@ public class FilterActivity extends AppCompatActivity {
         private Switch eventSwitch;
         private FilterItem currentItem;
 
-        public ItemHolder(LayoutInflater inflater, ViewGroup parent) {
+        ItemHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_events, parent, false));
             eventTitleView =  itemView.findViewById(R.id.filterEvents);
             eventNoteView = itemView.findViewById(R.id.filterNote);
@@ -93,7 +96,7 @@ public class FilterActivity extends AppCompatActivity {
                 }
             });
         }
-        public void bind(FilterItem item) {
+        void bind(FilterItem item) {
             currentItem = item;
             eventTitleView.setText(item.getEventName());
             eventNoteView.setText(item.getNote());

@@ -1,14 +1,14 @@
-package com.example.familymap;
+package com.example.familymap.eventFunction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.joanzapata.iconify.Iconify;
-import com.joanzapata.iconify.fonts.FontAwesomeModule;
+import com.example.familymap.mainActivityFunction.MainActivity;
+import com.example.familymap.mainActivityFunction.MapFragment;
+import com.example.familymap.R;
 
 public class EventActivity extends AppCompatActivity {
     @Override

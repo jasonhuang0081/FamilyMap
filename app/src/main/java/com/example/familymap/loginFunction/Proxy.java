@@ -1,6 +1,5 @@
-package com.example.familymap;
+package com.example.familymap.loginFunction;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,8 +8,9 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import com.example.familymap.model.Data;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import requests.EventAllRequest;
 import requests.LoginRequest;
@@ -173,16 +173,6 @@ public class Proxy {
         return result;
     }
 
-    private static String readString(InputStream is) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        InputStreamReader sr = new InputStreamReader(is);
-        char[] buf = new char[1024];
-        int len;
-        while ((len = sr.read(buf)) > 0) {
-            sb.append(buf, 0, len);
-        }
-        return sb.toString();
-    }
     private static void writeString(String str, OutputStream os) throws IOException {
         OutputStreamWriter sw = new OutputStreamWriter(os);
         sw.write(str);

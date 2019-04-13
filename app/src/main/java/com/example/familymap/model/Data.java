@@ -1,4 +1,6 @@
-package com.example.familymap;
+package com.example.familymap.model;
+
+import com.example.familymap.searchFunction.SearchItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +54,31 @@ public class Data {
         }
         return single_instance;
     }
+    public void reset()
+    {
+         personList = new ArrayList<>();
+         eventList = new ArrayList<>();
+        shownEvent = new ArrayList<>();
+        markerColor = new TreeMap<>();
+        eventFilter = new TreeMap<>();
+        eventIDToGender = new TreeMap<>();
+        eventIDToBelongerID = new TreeMap<>();
+         personIDtoParents = new TreeMap<>();
+        parentIDtoChildren = new TreeMap<>();
+         motherSideEvent = new ArrayList<>();
+        fatherSideEvent = new ArrayList<>();
+         ismaleEvent = true;
+        isfemaleEvent= true;
+        ismotherSideEvent = true;
+        isfatherSiceEvent = true;
+       isSpouseLine = true;
+       isLifeLine = true;
+         isFamilyTreeLine = true;
+         mapType = "normal";
+         spouseLineColor = "blue";
+         lifeLineColor = "red";
+         FamilyLineColor = "green";
+    }
 
     public List<Event> getPersonalEvents(String personID)
     {
@@ -79,81 +106,19 @@ public class Data {
         return personalEvents;
     }
 
-    public Map<String, Set<Person>> getPersonIDtoParents() {
-        return personIDtoParents;
-    }
 
-    public Map<String, Person> getParentIDtoChildren() {
-        return parentIDtoChildren;
-    }
-
-    public boolean isSpouseLine() {
-        return isSpouseLine;
-    }
-
-
-    public String getMapType() {
-        return mapType;
-    }
-
-    public void setMapType(String mapType) {
-        this.mapType = mapType;
-    }
-    public void setSpouseLine(boolean spouseLine) {
-        isSpouseLine = spouseLine;
-    }
-
-    public boolean isLifeLine() {
-        return isLifeLine;
-    }
-
-    public void setLifeLine(boolean lifeLine) {
-        isLifeLine = lifeLine;
-    }
-
-    public boolean isFamilyTreeLine() {
-        return isFamilyTreeLine;
-    }
-
-    public void setFamilyTreeLine(boolean familyTreeLine) {
-        isFamilyTreeLine = familyTreeLine;
-    }
-
-    public String getSpouseLineColor() {
-        return spouseLineColor;
-    }
-
-    public void setSpouseLineColor(String spouseLineColor) {
-        this.spouseLineColor = spouseLineColor;
-    }
-
-    public String getLifeLineColor() {
-        return lifeLineColor;
-    }
-
-    public void setLifeLineColor(String lifeLineColor) {
-        this.lifeLineColor = lifeLineColor;
-    }
-
-    public String getFamilyLineColor() {
-        return FamilyLineColor;
-    }
-
-    public void setFamilyLineColor(String familyLineColor) {
-        FamilyLineColor = familyLineColor;
-    }
-
-    public List<Person> getImmediateFaimly(String personID)
+    public List<Person> getImmediateFamily(String personID)
     {
         List<Person> family = new ArrayList<>();
         for (Map.Entry<String, Set<Person>> entry : personIDtoParents.entrySet())
         {
             if (entry.getKey().equals(personID))
             {
-                for(Person parent: entry.getValue())
-                {
-                    family.add(parent);
-                }
+                family.addAll(entry.getValue());
+//                for(Person parent: entry.getValue())
+//                {
+//                    family.add(parent);
+//                }
                 break;
             }
         }
@@ -189,8 +154,7 @@ public class Data {
             tempList1.addAll(fatherSideEvent);
         }
         // get events that's are mother side nor father side
-        List<Event> otherEvents = new ArrayList<>();
-        otherEvents.addAll(eventList);
+        List<Event> otherEvents = new ArrayList<>(eventList);
         otherEvents.removeAll(motherSideEvent);
         otherEvents.removeAll(fatherSideEvent);
         tempList1.addAll(otherEvents);
@@ -301,13 +265,7 @@ public class Data {
         filter();
     }
 
-    public Map<String, Boolean> getEventFilter() {
-        return eventFilter;
-    }
 
-    public void setEventFilter(Map<String, Boolean> eventFilter) {
-        this.eventFilter = eventFilter;
-    }
 
     private void recurTree(Person person, String side)
     {
@@ -395,6 +353,40 @@ public class Data {
         }
         return null;
     }
+    public List<SearchItem> doSearching(String input)
+    {
+        List<Person> personList = Data.getInstance().getPersonList();
+        List<Event> eventList = Data.getInstance().getShownEvent();
+        List<SearchItem> result = new ArrayList<>();
+        for (Person each: personList)
+        {
+            if (each.getFirstName().toLowerCase().contains(input) || each.getLastName().toLowerCase().contains(input))
+            {
+                String firstLine = each.getFirstName() + " " + each.getLastName();
+                boolean isMale = false;
+                if (each.getGender().equals("m"))
+                {
+                    isMale = true;
+                }
+                result.add(new SearchItem(firstLine,"",false,isMale,each,null));
+            }
+        }
+        for (Event each: eventList)
+        {
+            if (each.getCountry().toLowerCase().contains(input) || each.getCity().toLowerCase().contains(input)
+                    || each.getEventType().toLowerCase().contains(input))
+            {
+                String firstLine = each.getEventType() + ": " + each.getCity() + ", " + each.getCountry()
+                        + " (" + each.getYear() + ")";
+                String personID = Data.getInstance().getEventIDToBelongerID().get(each.getEventID());
+                Person person = Data.getInstance().getPersonByID(personID);
+                String secondLine = person.getFirstName() + " " + person.getLastName();
+                result.add(new SearchItem(firstLine,secondLine,true,false,null,each));
+
+            }
+        }
+        return result;
+    }
 
     public void setCurrentPerson(Person currentPerson) {
         this.currentPerson = currentPerson;
@@ -418,7 +410,7 @@ public class Data {
 
 
     public void setPersonList(List<Person> personList) {
-        List<Person> people = this.personList = personList;
+        this.personList = personList;
     }
 
     public List<Event> getEventList() {
@@ -431,10 +423,6 @@ public class Data {
 
     public Map<String, Integer> getMarkerColor() {
         return markerColor;
-    }
-
-    public void setMarkerColor(Map<String, Integer> markerColor) {
-        this.markerColor = markerColor;
     }
 
     public String getHostString() {
@@ -507,5 +495,72 @@ public class Data {
 
     public void setFatherSideEvent(List<Event> fatherSideEvent) {
         this.fatherSideEvent = fatherSideEvent;
+    }
+    public Map<String, Boolean> getEventFilter() {
+        return eventFilter;
+    }
+
+    public void setEventFilter(Map<String, Boolean> eventFilter) {
+        this.eventFilter = eventFilter;
+    }
+
+    public Map<String, Set<Person>> getPersonIDtoParents() {
+        return personIDtoParents;
+    }
+
+    public boolean isSpouseLine() {
+        return isSpouseLine;
+    }
+
+
+    public String getMapType() {
+        return mapType;
+    }
+
+    public void setMapType(String mapType) {
+        this.mapType = mapType;
+    }
+    public void setSpouseLine(boolean spouseLine) {
+        isSpouseLine = spouseLine;
+    }
+
+    public boolean isLifeLine() {
+        return isLifeLine;
+    }
+
+    public void setLifeLine(boolean lifeLine) {
+        isLifeLine = lifeLine;
+    }
+
+    public boolean isFamilyTreeLine() {
+        return isFamilyTreeLine;
+    }
+
+    public void setFamilyTreeLine(boolean familyTreeLine) {
+        isFamilyTreeLine = familyTreeLine;
+    }
+
+    public String getSpouseLineColor() {
+        return spouseLineColor;
+    }
+
+    public void setSpouseLineColor(String spouseLineColor) {
+        this.spouseLineColor = spouseLineColor;
+    }
+
+    public String getLifeLineColor() {
+        return lifeLineColor;
+    }
+
+    public void setLifeLineColor(String lifeLineColor) {
+        this.lifeLineColor = lifeLineColor;
+    }
+
+    public String getFamilyLineColor() {
+        return FamilyLineColor;
+    }
+
+    public void setFamilyLineColor(String familyLineColor) {
+        FamilyLineColor = familyLineColor;
     }
 }

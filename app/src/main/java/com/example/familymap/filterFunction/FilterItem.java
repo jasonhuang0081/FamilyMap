@@ -1,12 +1,9 @@
-package com.example.familymap;
+package com.example.familymap.filterFunction;
 
-public class FilterItem {
+class FilterItem {
     private String eventName;
     private String note;
     private boolean isChecked;
-
-    public FilterItem() {
-    }
 
     public FilterItem(String eventName, String note, boolean isChecked) {
         this.eventName = eventName;

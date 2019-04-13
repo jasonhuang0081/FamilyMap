@@ -1,6 +1,7 @@
 package com.example.familymap;
 
 import com.example.familymap.model.Data;
+import com.example.familymap.searchFunction.SearchItem;
 
 import org.junit.After;
 import org.junit.Before;
@@ -8,14 +9,13 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import model.Event;
 import model.Person;
 
 import static org.junit.Assert.assertEquals;
 
-public class ModelTestFilterEvents {
+public class ModelTestSearching {
     private Event childEvent;
     private Event fatherEvent;
     private Event motherEvent;
@@ -28,9 +28,9 @@ public class ModelTestFilterEvents {
     private Person gradma;
     private List<Event> eventList = new ArrayList<>();
     private List<Person> personList = new ArrayList<>();
-
     @Before
-    public void setUp() {
+    public void setUp()
+    {
         child = new Person("a", "child", "current", "A",
                 "m", "fatherID", "motherID", "notExist");
         father = new Person("fatherID", "child", "Jackson", "A",
@@ -57,8 +57,6 @@ public class ModelTestFilterEvents {
         gradmaEvent = new Event("abacde", "myName", "grandmaID",
                 7f, 11f, "sd", "China",
                 "surfing", 1999);
-
-
     }
     @After
     public void tearDown()
@@ -66,7 +64,7 @@ public class ModelTestFilterEvents {
         Data.getInstance().reset();
     }
     @Test
-    public void filterFatherEventsPass()
+    public void searchEventsPass()
     {
         eventList.add(motherEvent);
         eventList.add(fatherEvent);
@@ -83,38 +81,14 @@ public class ModelTestFilterEvents {
         Data.getInstance().setCurrentPerson(child);
         Data.getInstance().processData(child.getPersonID());
 
-        Data.getInstance().setIsfatherSiceEvent(false);
-        Data.getInstance().filter();
-        List<Event> result = Data.getInstance().getShownEvent();
-        List<Event> actual = new ArrayList<>();
-        actual.add(childEvent);
-        actual.add(motherEvent);
-        assertEquals(result,actual);
+        // search father's event with its country name
+        List<SearchItem> result = Data.getInstance().doSearching("Korea".toLowerCase());
+        // there should be one item only
+        assertEquals(result.size(),1);
+        assertEquals(result.get(0).getEvent(),fatherEvent);
     }
     @Test
-    public void filterFatherEventsFail()
-    {
-        // no father and father father side events
-        eventList.add(motherEvent);
-        eventList.add(childEvent);
-        personList.add(child);
-        personList.add(mother);
-        Data.getInstance().setEventList(eventList);
-        Data.getInstance().setPersonList(personList);
-        Data.getInstance().setCurrentPerson(child);
-        Data.getInstance().processData(child.getPersonID());
-
-        Data.getInstance().setIsfatherSiceEvent(false);
-        Data.getInstance().filter();
-        List<Event> result = Data.getInstance().getShownEvent();
-        List<Event> actual = new ArrayList<>();
-        actual.add(childEvent);
-        actual.add(motherEvent);
-        assertEquals(result,actual);
-
-    }
-    @Test
-    public void filterMaleEventsPass()
+    public void searchEventsFail()
     {
         eventList.add(motherEvent);
         eventList.add(fatherEvent);
@@ -131,40 +105,13 @@ public class ModelTestFilterEvents {
         Data.getInstance().setCurrentPerson(child);
         Data.getInstance().processData(child.getPersonID());
 
-        Data.getInstance().setIsmaleEvent(false);
-        Data.getInstance().filter();
-        List<Event> result = Data.getInstance().getShownEvent();
-        List<Event> actual = new ArrayList<>();
-        actual.add(motherEvent);
-        actual.add(gradmaEvent);
-        assertEquals(result,actual);
+        // search something not in there
+        List<SearchItem> result = Data.getInstance().doSearching("thereIsNoSuchAThingInThere".toLowerCase());
+        // there should be one item only
+        assertEquals(result.size(),0);
     }
     @Test
-    public void filterMaleEventsFail()
-    {
-        // no male event at all
-        eventList.add(motherEvent);
-        eventList.add(gradmaEvent);
-        personList.add(child);
-        personList.add(father);
-        personList.add(mother);
-        personList.add(gradpa);
-        personList.add(gradma);
-        Data.getInstance().setEventList(eventList);
-        Data.getInstance().setPersonList(personList);
-        Data.getInstance().setCurrentPerson(child);
-        Data.getInstance().processData(child.getPersonID());
-
-        Data.getInstance().setIsmaleEvent(false);
-        Data.getInstance().filter();
-        List<Event> result = Data.getInstance().getShownEvent();
-        List<Event> actual = new ArrayList<>();
-        actual.add(motherEvent);
-        actual.add(gradmaEvent);
-        assertEquals(result,actual);
-    }
-    @Test
-    public void filterSpecialEventPass()
+    public void searchPersonPass()
     {
         eventList.add(motherEvent);
         eventList.add(fatherEvent);
@@ -181,25 +128,20 @@ public class ModelTestFilterEvents {
         Data.getInstance().setCurrentPerson(child);
         Data.getInstance().processData(child.getPersonID());
 
-        // do not show the event type that is the same as fatherEvent, which is surfing type
-        Map<String, Boolean> temp = Data.getInstance().getEventFilter();
-        temp.put(fatherEvent.getEventType(),false);
-        Data.getInstance().setEventFilter(temp);
-        Data.getInstance().filter();
-        List<Event> result = Data.getInstance().getShownEvent();
-        List<Event> actual = new ArrayList<>();
-        actual.add(gradpaEvent);
-        actual.add(childEvent);
-        actual.add(motherEvent);
-        assertEquals(result,actual);
-
+        // search father's event with its country name
+        List<SearchItem> result = Data.getInstance().doSearching("Eve".toLowerCase());
+        // there should be one item only
+        assertEquals(result.size(),1);
+        assertEquals(result.get(0).getPerson(),mother);
     }
     @Test
-    public void filterSpecialEventFail()
+    public void searchPersonFail()
     {
         eventList.add(motherEvent);
+        eventList.add(fatherEvent);
         eventList.add(childEvent);
         eventList.add(gradpaEvent);
+        eventList.add(gradmaEvent);
         personList.add(child);
         personList.add(father);
         personList.add(mother);
@@ -210,18 +152,9 @@ public class ModelTestFilterEvents {
         Data.getInstance().setCurrentPerson(child);
         Data.getInstance().processData(child.getPersonID());
 
-        //desired event to be turn off doesn't exist
-        Map<String, Boolean> temp = Data.getInstance().getEventFilter();
-        temp.put(fatherEvent.getEventType(),false);
-        Data.getInstance().setEventFilter(temp);
-        Data.getInstance().filter();
-        List<Event> result = Data.getInstance().getShownEvent();
-        List<Event> actual = new ArrayList<>();
-        actual.add(gradpaEvent);
-        actual.add(childEvent);
-        actual.add(motherEvent);
-        assertEquals(result,actual);
-
+        // search father's event with its country name
+        List<SearchItem> result = Data.getInstance().doSearching("NoBodyIsWithThisName".toLowerCase());
+        // there should be one item only
+        assertEquals(result.size(),0);
     }
-
 }

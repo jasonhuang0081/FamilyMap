@@ -1,9 +1,8 @@
-package com.example.familymap;
+package com.example.familymap.loginFunction;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -14,9 +13,12 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.familymap.model.Data;
+import com.example.familymap.mainActivityFunction.MainActivity;
+import com.example.familymap.R;
+
 import java.net.URL;
 
-import model.Person;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import results.LoginResult;
@@ -24,14 +26,6 @@ import results.RegisterResult;
 
 public class LoginFragment extends Fragment {
     private String personID;
-    private EditText serverHost;
-    private EditText serverPort;
-    private EditText userName;
-    private EditText password;
-    private EditText firstName;
-    private EditText lastName;
-    private EditText email;
-    private RadioGroup radioButton;
     private Button signInButton;
     private Button registerButton;
     private String hostString;
@@ -43,24 +37,24 @@ public class LoginFragment extends Fragment {
     private String emailString;
     private String gender;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
 
-        serverHost = v.findViewById(R.id.serverHost);
-        serverPort = v.findViewById(R.id.serverPort);
-        userName = v.findViewById(R.id.userName);
-        password = v.findViewById(R.id.passWord);
-        firstName = v.findViewById(R.id.firstName);
-        lastName = v.findViewById(R.id.lastName);
-        email = v.findViewById(R.id.email);
-        radioButton =  v.findViewById(R.id.RGroup);
+        EditText serverHost = v.findViewById(R.id.serverHost);
+        EditText serverPort = v.findViewById(R.id.serverPort);
+        EditText userName = v.findViewById(R.id.userName);
+        EditText password = v.findViewById(R.id.passWord);
+        EditText firstName = v.findViewById(R.id.firstName);
+        EditText lastName = v.findViewById(R.id.lastName);
+        EditText email = v.findViewById(R.id.email);
+        RadioGroup radioButton = v.findViewById(R.id.RGroup);
         signInButton = v.findViewById(R.id.signInButton);
         registerButton = v.findViewById(R.id.registerButton);
 
@@ -242,7 +236,7 @@ public class LoginFragment extends Fragment {
                     String synchRes = proxy.getAllData(result.getToken(),eventURL,personURL);
                     if (synchRes.equals("Updated Succeed!"))
                     {
-                        output = firstNameString + " " + lastNameString;
+                        output = "welcome";
                         personID = result.getPersonID();
                         //// sign in
 //                        Data.getInstance().setSignIn(true);
@@ -265,8 +259,7 @@ public class LoginFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void param) {
-            Toast.makeText(getActivity(), output, Toast.LENGTH_SHORT).show();
-            if (output.equals(firstNameString + " " + lastNameString))
+            if (output.equals("welcome"))
             {
                 Data.getInstance().setHostString(hostString);
                 Data.getInstance().setPortString(portString);
@@ -281,6 +274,7 @@ public class LoginFragment extends Fragment {
                 MainActivity activity = (MainActivity) getActivity();
                 activity.SetMap();
             }
+            Toast.makeText(getActivity(), output, Toast.LENGTH_SHORT).show();
         }
     }
     private class RegisterTask extends AsyncTask<Void,Void,Void> {

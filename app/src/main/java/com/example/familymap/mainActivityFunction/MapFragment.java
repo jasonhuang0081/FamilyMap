@@ -1,9 +1,7 @@
-package com.example.familymap;
+package com.example.familymap.mainActivityFunction;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.familymap.R;
+import com.example.familymap.model.Data;
+import com.example.familymap.personFunction.PersonActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,7 +42,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
     private TextView eventDisplay;
     private TextView yearDisplay;
     private ImageView image;
-    private View clickView;
     private int colorFactor = 1;
 
     @Override
@@ -55,7 +55,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         eventDisplay = view.findViewById(R.id.eventNCity);
         yearDisplay = view.findViewById(R.id.eventCountryNtime);
         image = view.findViewById(R.id.image);
-        clickView = view.findViewById(R.id.clickView);
+        View clickView = view.findViewById(R.id.clickView);
 //        List<Event> personalEvents = Data.getInstance().getPersonalEvents(Data.getInstance().getCurrentPerson().getPersonID());
 //        if (personalEvents.size() != 0)
 //        {
@@ -79,7 +79,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         return view;
     }
 
-    public void setMapType()
+    private void setMapType()
     {
         int mapTypeInt = 1;
         if (Data.getInstance().getMapType().equals("normal"))
@@ -198,7 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback  {
         yearDisplay.setText(thirdLineInfo);
 
     }
-    public void drawLines()
+    private void drawLines()
     {
 //        map.clear();
 //        addMarker();
